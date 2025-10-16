@@ -1,0 +1,60 @@
+name: CI/CD Proyecto Riego Óptimo
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  # Aquí se compila el proyecto y genera los artefactos
+  compilar:
+    name: Compilar proyecto
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Obtener código
+        uses: actions/checkout@v4
+
+      - name: Configurar Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Dar permisos al wrapper de Gradle
+        run: chmod +x gradlew
+
+      - name: Compilar el proyecto con Gradle (sin ejecutar pruebas)
+        run: ./gradlew clean assemble --no-daemon
+
+      - name: Generar artefactos del build
+        uses: actions/upload-artifact@v4
+        with:
+          name: artefactos-proyecto
+          path: build/libs/*.jar
+
+      - name: Confirmar compilación
+        run: echo "✅✅✅✅VAMOOOOSSS Compilación exitosa✅✅✅✅"
+
+  #Como se pidió, se ignoran las pruebas (solo verifica compilación)
+  ignorar-pruebas:
+    name: Ignorar pruebas (verificación rápida)
+    runs-on: ubuntu-latest
+    needs: compilar  # Solo se ejecuta si la compilación fue exitosa
+
+    steps:
+      - name: Obtener código
+        uses: actions/checkout@v4
+
+      - name: Configurar Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Verificar que el código compile sin ejecutar pruebas
+        run: ./gradlew compileJava --no-daemon
+
+      - name: Confirmar acción
+        run: echo "✅🙏🏻⚙️ Pruebas ignoradas correctamente. Verificación de compilación completada."
