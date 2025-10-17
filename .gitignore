@@ -57,7 +57,7 @@ local.properties
 !.github/
 !.github/workflows/
 !docs/
-!src/
-!tests/
+!app/
+
 !README.md
 !.gitignore

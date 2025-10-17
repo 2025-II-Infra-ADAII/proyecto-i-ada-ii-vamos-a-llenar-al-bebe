@@ -1,14 +1,19 @@
-
+package pruebagradle;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+
 
 import java.util.AbstractMap.SimpleEntry;
 
-public class Main {
+public class App {
 
 
     /* p/tr */
@@ -152,7 +157,7 @@ public class Main {
 
 
     public static void mostrar(int [][] Finca){
-        Main F1 = new Main ();
+        App F1 = new App();
 
         System.out.println("Fuerza bruta:");
  
@@ -183,31 +188,78 @@ public class Main {
 
     }
 
+    public static int[][] leerFincaDesdeRecursos(String nombreArchivo) {
+        ArrayList<int[]> listaFinca = new ArrayList<>();
 
+        
+        InputStream is = App.class.getResourceAsStream("/" + nombreArchivo);
+        if (is == null) {
+            System.err.println("No se encontró el recurso en el classpath: " + nombreArchivo);
+            return new int[0][0]; 
+        }
+
+            try (BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
+                String linea;
+                while ((linea = br.readLine()) != null) {
+                    linea = linea.trim();
+                    // Eliminar comentarios y líneas vacías
+                    if (linea.isEmpty() || linea.startsWith("#") || linea.startsWith("//")) continue;
+
+                    
+                    int idxHash = linea.indexOf('#');
+                    int idxSlash = linea.indexOf("//");
+                    int corte = -1;
+                    if (idxHash >= 0 && idxSlash >= 0) corte = Math.min(idxHash, idxSlash);
+                    else if (idxHash >= 0) corte = idxHash;
+                    else if (idxSlash >= 0) corte = idxSlash;
+
+                    if (corte >= 0) linea = linea.substring(0, corte).trim();
+                    if (linea.isEmpty()) continue;
+
+                    String[] partes = linea.split("\\s+");
+                    int[] fila = new int[partes.length];
+                    for (int i = 0; i < partes.length; i++) {
+                        fila[i] = Integer.parseInt(partes[i]);
+                    }
+                    listaFinca.add(fila);
+                }
+            } catch (IOException e) {
+                System.err.println("Error leyendo recurso: " + e.getMessage());
+                e.printStackTrace();
+            } catch (NumberFormatException e) {
+                System.err.println("Formato inválido en el archivo: " + e.getMessage());
+                e.printStackTrace();
+            }
+
+            // Convertir ArrayList<int[]> a int[][]
+            int[][] finca = new int[listaFinca.size()][];
+            for (int i = 0; i < listaFinca.size(); i++) {
+                finca[i] = listaFinca.get(i);
+            }
+            return finca;
+    }
+
+       
     
 
     public static void main(String[] args) {
+        // Nombre del archivo
+        String nombre = "finca.txt";
 
-        /*Finca = ⟨⟨10, 3, 4⟩, ⟨5, 3, 3⟩, ⟨2, 2, 1⟩, ⟨8, 1, 1⟩, ⟨6, 4, 2⟩⟩. */
-        int [][] Finca = {
-                {10, 3, 4},
-                {5, 3, 3},
-                {2, 2, 1},
-                {8, 1, 1},
-                {6, 4, 2}
-        };
-         
+        int[][] Finca = leerFincaDesdeRecursos(nombre);
+
+        if (Finca.length == 0) {
+            System.err.println("No se cargaron datos. Verifica que " + nombre + " exista en src/main/resources y tenga contenido válido.");
+            return;
+        }
+        System.out.println(Arrays.deepToString(Finca));
+
         mostrar(Finca);
-        
-        /* 
-        int [] programacion = {1,4,2,0,3};
-        P_Riego F1 = new P_Riego();
-        System.out.println("Costo programacion dada: " + F1.calcularCosto(Finca, programacion));
-        */
-        
-
-
-
-        
     }
+
+
+    public String getGreeting() {
+        return "Hello World!";
+    }
+
 }
