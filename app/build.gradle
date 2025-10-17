@@ -50,3 +50,15 @@ test {
         showStackTraces = true
     }
 }
+
+tasks.register('compileApp') {
+    group = 'build'
+    description = 'Compila la aplicación Java'
+    
+    dependsOn tasks.named('classes')
+    
+    doLast {
+        println '✅ Aplicación compilada exitosamente'
+        println '📁 Archivos compilados en: build/classes/java/main'
+    }
+}

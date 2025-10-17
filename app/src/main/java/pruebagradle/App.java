@@ -16,6 +16,56 @@ import java.util.AbstractMap.SimpleEntry;
 public class App {
 
 
+    public int[] programacionDinamica(int[][] Finca) {
+        int n = Finca.length;
+
+        //Retorna vacio si la finca esta vacia
+        if (n == 0) return new int[0];
+        
+        int[] mejorOrden = new int[n];
+        int tamañoActual = 1;
+        mejorOrden[0] = 0;
+        
+        for (int k = 1; k < n; k++) {
+            int[] ordenAnterior = Arrays.copyOf(mejorOrden, tamañoActual);
+            long mejorCosto = Integer.MAX_VALUE;
+            int[] mejorOrdenActual = null;
+            
+            for (int pos = 0; pos <= tamañoActual; pos++) {
+                int[] nuevoOrden = insertarEnPosicion(ordenAnterior, k, pos, tamañoActual);
+                long costo = calcularCosto(Finca, nuevoOrden);
+                
+                if (costo < mejorCosto) {
+                    mejorCosto = costo;
+                    mejorOrdenActual = nuevoOrden;
+                }
+            }
+            
+            mejorOrden = mejorOrdenActual;
+            tamañoActual++;
+        }
+        
+        return mejorOrden;
+    }
+
+    private int[] insertarEnPosicion(int[] array, int elemento, int posicion, int tamaño) {
+        int[] nuevo = new int[tamaño + 1];
+        
+        if (posicion > 0) {
+            System.arraycopy(array, 0, nuevo, 0, posicion);
+        }
+        
+        nuevo[posicion] = elemento;
+        
+        if (posicion < tamaño) {
+            System.arraycopy(array, posicion, nuevo, posicion + 1, tamaño - posicion);
+        }
+        
+        return nuevo;
+    }
+
+
+
     /* p/tr */
     public int[] programacionVoraz1(int[][] Finca){
         int n = Finca.length;
@@ -128,29 +178,22 @@ public class App {
     }
 
     /*Metodo para calcular el costo de una programación */
-    public long calcularCosto(int[][] Finca, int[] programacion){
-        int costoTotal = 0;
-        int tiempoRiego = 0;
-
-        for (int i = 0; i < programacion.length; i++){
-
-            int tablon = programacion[i];
-            /* Cada tablon es el valor de i */
-            long ts = Finca[tablon][0];
-            long tr = Finca[tablon][1];
-            long pi = Finca[tablon][2];
-
-            /* Calculamos la penalizacion */
-            long penalizacion = (tiempoRiego - ts + tr);
-
-            /* Si la penalizacion es mayor que 0 se le agrega al costo total */
-            if ( penalizacion > 0){
-                costoTotal += penalizacion * pi;
-            }else{
-                costoTotal += 0;
+    public long calcularCosto(int[][] Finca, int[] programacion) {
+        long costoTotal = 0;
+        int tiempoActual = 0;
+        
+        for (int i = 0; i < programacion.length; i++) {
+            int idx = programacion[i];
+            int ts = Finca[idx][0];
+            int tr = Finca[idx][1];
+            int p = Finca[idx][2];
+            
+            int tiempoFin = tiempoActual + tr;
+            // FÓRMULA CORRECTA: max(0, tiempoFin - ts)
+            if (tiempoFin > ts) {
+                costoTotal += (long) p * (tiempoFin - ts);
             }
-            /* Actualizamos el tiempo de riego */
-            tiempoRiego += tr;
+            tiempoActual = tiempoFin;
         }
         return costoTotal;
     }
@@ -186,65 +229,151 @@ public class App {
         }
         System.out.println("");
 
+        System.out.print("Solucion dinamica: ");
+        int[] optimo =  F1.programacionDinamica(Finca);
+        for (int i = 0; i < optimo.length ; i++){
+            System.out.print(optimo[i] + " ");
+        }
+
     }
 
     public static int[][] leerFincaDesdeRecursos(String nombreArchivo) {
-        ArrayList<int[]> listaFinca = new ArrayList<>();
-
-        
-        InputStream is = App.class.getResourceAsStream("/" + nombreArchivo);
-        if (is == null) {
-            System.err.println("No se encontró el recurso en el classpath: " + nombreArchivo);
-            return new int[0][0]; 
-        }
-
-            try (BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
-                String linea;
-                while ((linea = br.readLine()) != null) {
-                    linea = linea.trim();
-                    // Eliminar comentarios y líneas vacías
-                    if (linea.isEmpty() || linea.startsWith("#") || linea.startsWith("//")) continue;
-
-                    
-                    int idxHash = linea.indexOf('#');
-                    int idxSlash = linea.indexOf("//");
-                    int corte = -1;
-                    if (idxHash >= 0 && idxSlash >= 0) corte = Math.min(idxHash, idxSlash);
-                    else if (idxHash >= 0) corte = idxHash;
-                    else if (idxSlash >= 0) corte = idxSlash;
-
-                    if (corte >= 0) linea = linea.substring(0, corte).trim();
-                    if (linea.isEmpty()) continue;
-
-                    String[] partes = linea.split("\\s+");
-                    int[] fila = new int[partes.length];
-                    for (int i = 0; i < partes.length; i++) {
-                        fila[i] = Integer.parseInt(partes[i]);
-                    }
-                    listaFinca.add(fila);
-                }
-            } catch (IOException e) {
-                System.err.println("Error leyendo recurso: " + e.getMessage());
-                e.printStackTrace();
-            } catch (NumberFormatException e) {
-                System.err.println("Formato inválido en el archivo: " + e.getMessage());
-                e.printStackTrace();
-            }
-
-            // Convertir ArrayList<int[]> a int[][]
-            int[][] finca = new int[listaFinca.size()][];
-            for (int i = 0; i < listaFinca.size(); i++) {
-                finca[i] = listaFinca.get(i);
-            }
-            return finca;
+    InputStream is = App.class.getResourceAsStream("/" + nombreArchivo);
+    if (is == null) {
+        System.err.println("No se encontró el recurso en el classpath: " + nombreArchivo);
+        return new int[0][0];
     }
 
-       
+    try (BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
+        String linea;
+        int n = -1;
+        int[][] finca = null;
+        int index = 0;
+        
+        while ((linea = br.readLine()) != null) {
+            linea = linea.trim();
+            
+            // Eliminar comentarios y líneas vacías
+            if (linea.isEmpty() || linea.startsWith("#") || linea.startsWith("//")) {
+                continue;
+            }
+            
+            // Eliminar comentarios al final de la línea
+            int idxHash = linea.indexOf('#');
+            int idxSlash = linea.indexOf("//");
+            if (idxHash >= 0 || idxSlash >= 0) {
+                int corte = Math.min(
+                    idxHash >= 0 ? idxHash : Integer.MAX_VALUE,
+                    idxSlash >= 0 ? idxSlash : Integer.MAX_VALUE
+                );
+                linea = linea.substring(0, corte).trim();
+            }
+            if (linea.isEmpty()) {
+                continue;
+            }
+            
+            // Primera línea: leer n y crear array
+            if (n == -1) {
+                n = Integer.parseInt(linea);
+                finca = new int[n][3]; // Allocar memoria exacta
+                continue;
+            }
+            
+            // Verificar límites
+            if (index >= n) {
+                System.err.println("Advertencia: Más líneas de las esperadas. Ignorando: " + linea);
+                continue;
+            }
+            
+            // Leer datos del tablón
+            String[] partes = linea.split(",");
+            if (partes.length != 3) {
+                System.err.println("Error: Se esperaban 3 valores separados por comas: " + linea);
+                continue;
+            }
+            
+            // Asignar directamente al array
+            finca[index][0] = Integer.parseInt(partes[0].trim()); // ts
+            finca[index][1] = Integer.parseInt(partes[1].trim()); // tr
+            finca[index][2] = Integer.parseInt(partes[2].trim()); // p
+            index++;
+        }
+        
+        // Verificar integridad
+        if (n != -1 && index != n) {
+            System.err.println("Advertencia: Se esperaban " + n + " tablones, pero se leyeron " + index);
+            // Si leímos menos, recortar el array
+            if (index < n) {
+                int[][] fincaRecortada = new int[index][3];
+                System.arraycopy(finca, 0, fincaRecortada, 0, index);
+                return fincaRecortada;
+            }
+        }
+        
+        return finca != null ? finca : new int[0][0];
+        
+    } catch (IOException e) {
+        System.err.println("Error leyendo recurso: " + e.getMessage());
+        return new int[0][0];
+    } catch (NumberFormatException e) {
+        System.err.println("Error de formato numérico: " + e.getMessage());
+        return new int[0][0];
+    }
+}
+
+public static void escribirResultado(long costo, int[] programacionOptima) {
+    // Escribir directamente en resources (asumiendo que ya existe)
+    String nombreArchivo = "src/main/resources/resultado.txt";
+    
+    try {
+        java.nio.file.Path rutaArchivo = java.nio.file.Paths.get(nombreArchivo);
+        
+        try (java.io.BufferedWriter writer = java.nio.file.Files.newBufferedWriter(
+                rutaArchivo,
+                java.nio.charset.StandardCharsets.UTF_8,
+                java.nio.file.StandardOpenOption.CREATE,
+                java.nio.file.StandardOpenOption.TRUNCATE_EXISTING,
+                java.nio.file.StandardOpenOption.WRITE)) {
+            
+            writer.write(String.valueOf(costo));
+            writer.newLine();
+            
+            for (int i = 0; i < programacionOptima.length; i++) {
+                writer.write(String.valueOf(programacionOptima[i]));
+                writer.newLine();
+            }
+            
+            System.out.println("Resultado guardado en: " + rutaArchivo.toAbsolutePath());
+        }
+        
+    } catch (java.io.IOException e) {
+        System.err.println("Error escribiendo resultado: " + e.getMessage());
+        
+        // Fallback al directorio actual
+        try (java.io.BufferedWriter writer = new java.io.BufferedWriter(
+                new java.io.FileWriter("resultado.txt"))) {
+            
+            writer.write(String.valueOf(costo));
+            writer.newLine();
+            
+            for (int i = 0; i < programacionOptima.length; i++) {
+                writer.write(String.valueOf(programacionOptima[i]));
+                writer.newLine();
+            }
+            
+            System.out.println("Resultado guardado en: resultado.txt (directorio actual)");
+            
+        } catch (java.io.IOException e2) {
+            System.err.println("Error crítico: " + e2.getMessage());
+        }
+    }
+}
     
 
     public static void main(String[] args) {
         // Nombre del archivo
         String nombre = "finca.txt";
+
 
         int[][] Finca = leerFincaDesdeRecursos(nombre);
 
@@ -252,9 +381,19 @@ public class App {
             System.err.println("No se cargaron datos. Verifica que " + nombre + " exista en src/main/resources y tenga contenido válido.");
             return;
         }
-        System.out.println(Arrays.deepToString(Finca));
 
-        mostrar(Finca);
+        App F1 = new App();
+
+        int [] optimo = F1.programacionDinamica(Finca);
+        
+        escribirResultado(F1.calcularCosto(Finca,optimo), optimo);
+
+        //mostrar(Finca);
+
+        
+
+
+        
     }
 
 

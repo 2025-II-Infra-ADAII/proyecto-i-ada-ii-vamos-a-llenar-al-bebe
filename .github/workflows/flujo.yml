@@ -26,7 +26,7 @@ jobs:
         run: chmod +x gradlew
 
       - name: Compilar el proyecto con Gradle (sin ejecutar pruebas)
-        run: ./gradlew clean assemble --no-daemon
+        run: ./gradlew clean assemble --no-daemon --exclude-task test
 
       - name: Generar artefactos del build
         uses: actions/upload-artifact@v4
@@ -54,7 +54,7 @@ jobs:
           java-version: '17'
 
       - name: Verificar que el código compile sin ejecutar pruebas
-        run: ./gradlew compileJava --no-daemon
+        run: ./gradlew compileJava --no-daemon --exclude-task test
 
       - name: Confirmar acción
         run: echo "✅🙏🏻⚙️ Pruebas ignoradas correctamente. Verificación de compilación completada."
