@@ -16,11 +16,11 @@ import java.util.AbstractMap.SimpleEntry;
 public class App {
 
 
-    public int[] roPD(int[][] Finca) {
+    public int[][] roPD(int[][] Finca) {
         int n = Finca.length;
 
         //Retorna vacio si la finca esta vacia
-        if (n == 0) return new int[0];
+        if (n == 0) return new int[0][0];
         
         int[] mejorOrden = new int[n];
         int tamañoActual = 1;
@@ -45,7 +45,8 @@ public class App {
             tamañoActual++;
         }
         
-        return mejorOrden;
+        long costoFinal = calcularCosto(Finca, mejorOrden);
+        return new int[][]{mejorOrden, new int[]{(int)costoFinal}};
     }
 
     private int[] insertarEnPosicion(int[] array, int elemento, int posicion, int tamaño) {
@@ -67,7 +68,7 @@ public class App {
 
 
     /* p/tr */
-    public int[] roV1(int[][] Finca){
+    public int[][] roV1(int[][] Finca){
         int n = Finca.length;
         int[] programacion = new int[n];
         
@@ -75,8 +76,8 @@ public class App {
             new PriorityQueue<>((a, b) -> Double.compare(b.getKey(), a.getKey()));
 
         for (int i = 0; i < n; i++) {
-        double voraz = (Finca[i][2] / (double)Finca[i][1]);
-        colaProg.offer(new SimpleEntry<>(voraz, i));  
+            double voraz = (Finca[i][2] / (double)Finca[i][1]);
+            colaProg.offer(new SimpleEntry<>(voraz, i));  
         }
         int cont = 0;
         while(!colaProg.isEmpty()){
@@ -84,12 +85,14 @@ public class App {
             programacion[cont] = entry.getValue();
             cont++;
         }
-        return programacion;
+
+        long costo = calcularCosto(Finca, programacion);
+        return new int[][]{programacion, new int[]{(int)costo}};
     }
 
 
     /* p/(ts-tr) */
-    public int[] roV2(int[][] Finca){
+    public int[][] roV2(int[][] Finca){
         int n = Finca.length;
         int[] programacion = new int[n];
         
@@ -114,10 +117,11 @@ public class App {
             programacion[cont] = entry.getValue();
             cont++;
         }
-        return programacion;
+        long costo = calcularCosto(Finca, programacion);
+        return new int[][]{programacion, new int[]{(int)costo}};
     }
 
-    public int[] roFB(int[][] Finca){
+    public int[][] roFB(int[][] Finca){
         int n = Finca.length;
         int[] mejorProgramacion = new int[n];
         int mejorCosto = Integer.MAX_VALUE;
@@ -136,7 +140,7 @@ public class App {
             }
         }
         
-        return mejorProgramacion;
+        return new int[][]{mejorProgramacion, new int[]{mejorCosto}};
     }
 
     private List<List<Integer>> generarPermutaciones(List<Integer> lista) {
@@ -199,42 +203,27 @@ public class App {
     }
 
 
-    public static void mostrar(int [][] Finca){
+        public static void mostrar(int [][] Finca){
         App F1 = new App();
 
         System.out.println("Fuerza bruta:");
- 
-        int[] prFB = F1.roFB(Finca); 
+        int[][] prFB = F1.roFB(Finca); 
         System.out.print("Programacion Fuerza Bruta: ");
-        for (int i = 0; i < prFB.length; i++) {
-            System.out.print(prFB[i] + " ");
-        }
-        System.out.println("");
-
+        System.out.println(Arrays.toString(prFB[0]) + " | Costo total: " + prFB[1][0]);
 
         System.out.println("Voraz 1:");
-
-        int[] prV = F1.roV1(Finca);
+        int[][] prV = F1.roV1(Finca);
         System.out.print("Programacion Voraz p/(ts-tr): ");
-        for (int i = 0; i < prV.length; i++) {
-            System.out.print(prV[i] + " ");
-        }
-        System.out.println("");
+        System.out.println(Arrays.toString(prV[0]) + " | Costo total: " + prV[1][0]);
 
         System.out.println("Voraz 2:");
-        int[] prV2 = F1.roV2(Finca);
+        int[][] prV2 = F1.roV2(Finca);
         System.out.print("Programacion Voraz p/tr: ");
-        for (int i = 0; i < prV2.length; i++) {
-            System.out.print(prV2[i] + " ");
-        }
-        System.out.println("");
+        System.out.println(Arrays.toString(prV2[0]) + " | Costo total: " + prV2[1][0]);
 
         System.out.print("Solucion dinamica: ");
-        int[] optimo =  F1.roPD(Finca);
-        for (int i = 0; i < optimo.length ; i++){
-            System.out.print(optimo[i] + " ");
-        }
-
+        int[][] optimo = F1.roPD(Finca);
+        System.out.println(Arrays.toString(optimo[0]) + " | Costo total: " + optimo[1][0]);
     }
 
     public static int[][] leerFincaDesdeRecursos(String nombreArchivo) {
@@ -384,9 +373,9 @@ public static void escribirResultado(long costo, int[] programacionOptima) {
 
         App F1 = new App();
 
-        int [] optimo = F1.roPD(Finca);
-        
-        escribirResultado(F1.calcularCosto(Finca,optimo), optimo);
+        int[][] optimo = F1.roPD(Finca);
+        escribirResultado(optimo[1][0], optimo[0]);
+
 
         //mostrar(Finca);
 

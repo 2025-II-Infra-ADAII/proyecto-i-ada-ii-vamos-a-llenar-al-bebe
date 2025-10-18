@@ -3,11 +3,10 @@
  */
 package pruebagradle;
 
-
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import java.util.Arrays;
-
+import java.util.AbstractMap;
 
 public class AppTest {
 
@@ -21,9 +20,13 @@ public class AppTest {
             {2, 3, 15}
         };
 
-        int[] resultado = app.roV1(finca);
-        assertEquals(3, resultado.length);
-        assertTrue(Arrays.stream(resultado).distinct().count() == 3);
+        int[][] resultado = app.roV1(finca);
+        int[] ruta = resultado[0];
+        int costo = resultado[1][0];
+
+        assertEquals(3, ruta.length);
+        assertTrue(Arrays.stream(ruta).distinct().count() == 3);
+        assertTrue(costo >= 0);
     }
 
     @Test
@@ -34,9 +37,13 @@ public class AppTest {
             {2, 3, 15}
         };
 
-        int[] resultado = app.roV2(finca);
-        assertEquals(3, resultado.length);
-        assertTrue(Arrays.stream(resultado).distinct().count() == 3);
+        int[][] resultado = app.roV2(finca);
+        int[] ruta = resultado[0];
+        int costo = resultado[1][0];
+
+        assertEquals(3, ruta.length);
+        assertTrue(Arrays.stream(ruta).distinct().count() == 3);
+        assertTrue(costo >= 0);
     }
 
     @Test
@@ -47,9 +54,13 @@ public class AppTest {
             {2, 3, 15}
         };
 
-        int[] resultado = app.roFB(finca);
-        assertEquals(3, resultado.length);
-        assertTrue(Arrays.stream(resultado).distinct().count() == 3);
+        int[][] resultado = app.roFB(finca);
+        int[] ruta = resultado[0];
+        int costo = resultado[1][0];
+
+        assertEquals(3, ruta.length);
+        assertTrue(Arrays.stream(ruta).distinct().count() == 3);
+        assertTrue(costo >= 0);
     }
 
     @Test
@@ -63,7 +74,6 @@ public class AppTest {
         long costo2 = app.calcularCosto(finca, new int[]{0, 1});
         assertEquals(costo1, costo2);
     }
-
 
     @Test
     void testLeerFincaDesdeRecursosArchivoInexistente() {
@@ -81,7 +91,6 @@ public class AppTest {
         long costo = app.calcularCosto(finca, orden);
         assertTrue(costo >= 0);
     }
-
 
     @Test
     void testCalcularCostoConPenalizacion() {
@@ -102,8 +111,12 @@ public class AppTest {
             {4, 2, 5},
             {1, 3, 15}
         };
-        int[] resultado = app.roV1(finca);
-        assertEquals(finca.length, resultado.length);
+        int[][] resultado = app.roV1(finca);
+        int[] ruta = resultado[0];
+        int costo = resultado[1][0];
+
+        assertEquals(finca.length, ruta.length);
+        assertTrue(costo >= 0);
     }
 
     @Test
@@ -112,8 +125,12 @@ public class AppTest {
             {2, 2, 10},
             {3, 1, 5}
         };
-        int[] resultado = app.roV2(finca);
-        assertEquals(2, resultado.length);
+        int[][] resultado = app.roV2(finca);
+        int[] ruta = resultado[0];
+        int costo = resultado[1][0];
+
+        assertEquals(2, ruta.length);
+        assertTrue(costo >= 0);
     }
 
     @Test
@@ -124,8 +141,12 @@ public class AppTest {
             {4, 2, 5},
             {1, 3, 15}
         };
-        int[] resultado = app.roPD(finca);
-        assertEquals(finca.length, resultado.length);
+        int[][] resultado = app.roPD(finca);
+        int[] ruta = resultado[0];
+        int costo = resultado[1][0];
+
+        assertEquals(finca.length, ruta.length);
+        assertTrue(costo >= 0);
     }
 
     @Test
