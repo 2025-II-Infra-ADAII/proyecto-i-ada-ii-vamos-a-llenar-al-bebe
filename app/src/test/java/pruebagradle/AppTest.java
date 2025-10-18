@@ -21,7 +21,7 @@ public class AppTest {
             {2, 3, 15}
         };
 
-        int[] resultado = app.programacionVoraz1(finca);
+        int[] resultado = app.roV1(finca);
         assertEquals(3, resultado.length);
         assertTrue(Arrays.stream(resultado).distinct().count() == 3);
     }
@@ -34,7 +34,7 @@ public class AppTest {
             {2, 3, 15}
         };
 
-        int[] resultado = app.programacionVoraz2(finca);
+        int[] resultado = app.roV2(finca);
         assertEquals(3, resultado.length);
         assertTrue(Arrays.stream(resultado).distinct().count() == 3);
     }
@@ -47,7 +47,7 @@ public class AppTest {
             {2, 3, 15}
         };
 
-        int[] resultado = app.programacionFuerzaBruta(finca);
+        int[] resultado = app.roFB(finca);
         assertEquals(3, resultado.length);
         assertTrue(Arrays.stream(resultado).distinct().count() == 3);
     }
@@ -102,7 +102,7 @@ public class AppTest {
             {4, 2, 5},
             {1, 3, 15}
         };
-        int[] resultado = app.programacionVoraz1(finca);
+        int[] resultado = app.roV1(finca);
         assertEquals(finca.length, resultado.length);
     }
 
@@ -112,8 +112,20 @@ public class AppTest {
             {2, 2, 10},
             {3, 1, 5}
         };
-        int[] resultado = app.programacionVoraz2(finca);
+        int[] resultado = app.roV2(finca);
         assertEquals(2, resultado.length);
+    }
+
+    @Test
+    void testProgramacionDinaConValoresAleatorios() {
+        int[][] finca = {
+            {2, 5, 20},
+            {3, 1, 10},
+            {4, 2, 5},
+            {1, 3, 15}
+        };
+        int[] resultado = app.roPD(finca);
+        assertEquals(finca.length, resultado.length);
     }
 
     @Test

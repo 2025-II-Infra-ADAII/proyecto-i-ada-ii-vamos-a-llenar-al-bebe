@@ -16,7 +16,7 @@ import java.util.AbstractMap.SimpleEntry;
 public class App {
 
 
-    public int[] programacionDinamica(int[][] Finca) {
+    public int[] roPD(int[][] Finca) {
         int n = Finca.length;
 
         //Retorna vacio si la finca esta vacia
@@ -67,7 +67,7 @@ public class App {
 
 
     /* p/tr */
-    public int[] programacionVoraz1(int[][] Finca){
+    public int[] roV1(int[][] Finca){
         int n = Finca.length;
         int[] programacion = new int[n];
         
@@ -89,7 +89,7 @@ public class App {
 
 
     /* p/(ts-tr) */
-    public int[] programacionVoraz2(int[][] Finca){
+    public int[] roV2(int[][] Finca){
         int n = Finca.length;
         int[] programacion = new int[n];
         
@@ -117,7 +117,7 @@ public class App {
         return programacion;
     }
 
-    public int[] programacionFuerzaBruta(int[][] Finca){
+    public int[] roFB(int[][] Finca){
         int n = Finca.length;
         int[] mejorProgramacion = new int[n];
         int mejorCosto = Integer.MAX_VALUE;
@@ -204,7 +204,7 @@ public class App {
 
         System.out.println("Fuerza bruta:");
  
-        int[] prFB = F1.programacionFuerzaBruta(Finca); 
+        int[] prFB = F1.roFB(Finca); 
         System.out.print("Programacion Fuerza Bruta: ");
         for (int i = 0; i < prFB.length; i++) {
             System.out.print(prFB[i] + " ");
@@ -214,7 +214,7 @@ public class App {
 
         System.out.println("Voraz 1:");
 
-        int[] prV = F1.programacionVoraz1(Finca);
+        int[] prV = F1.roV1(Finca);
         System.out.print("Programacion Voraz p/(ts-tr): ");
         for (int i = 0; i < prV.length; i++) {
             System.out.print(prV[i] + " ");
@@ -222,7 +222,7 @@ public class App {
         System.out.println("");
 
         System.out.println("Voraz 2:");
-        int[] prV2 = F1.programacionVoraz2(Finca);
+        int[] prV2 = F1.roV2(Finca);
         System.out.print("Programacion Voraz p/tr: ");
         for (int i = 0; i < prV2.length; i++) {
             System.out.print(prV2[i] + " ");
@@ -230,7 +230,7 @@ public class App {
         System.out.println("");
 
         System.out.print("Solucion dinamica: ");
-        int[] optimo =  F1.programacionDinamica(Finca);
+        int[] optimo =  F1.roPD(Finca);
         for (int i = 0; i < optimo.length ; i++){
             System.out.print(optimo[i] + " ");
         }
@@ -275,7 +275,7 @@ public class App {
             // Primera línea: leer n y crear array
             if (n == -1) {
                 n = Integer.parseInt(linea);
-                finca = new int[n][3]; // Allocar memoria exacta
+                finca = new int[n][3];
                 continue;
             }
             
@@ -384,7 +384,7 @@ public static void escribirResultado(long costo, int[] programacionOptima) {
 
         App F1 = new App();
 
-        int [] optimo = F1.programacionDinamica(Finca);
+        int [] optimo = F1.roPD(Finca);
         
         escribirResultado(F1.calcularCosto(Finca,optimo), optimo);
 
