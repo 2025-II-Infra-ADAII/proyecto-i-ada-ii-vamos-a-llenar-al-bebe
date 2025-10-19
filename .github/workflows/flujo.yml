@@ -54,7 +54,7 @@ jobs:
           java-version: '17'
 
       - name: Verificar que el código compile sin ejecutar pruebas
-        run: ./gradlew compileJava --no-daemon --exclude-task test
+        run: ./gradlew compileApp --no-daemon --exclude-task test
 
       - name: Confirmar acción
         run: echo "✅🙏🏻⚙️ Pruebas ignoradas correctamente. Verificación de compilación completada."
