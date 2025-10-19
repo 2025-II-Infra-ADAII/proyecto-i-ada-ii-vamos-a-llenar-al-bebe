@@ -3,28 +3,31 @@
 Empezamos describiendo el problema:
 1. Tenemos que n Tablones que se busca que estén ordenados de tal forma la penalización aplicada de la suma de todos los tablones sea lo mas pequeña posible (la menor penalización posible)
 2. La penalización esta descrita por la formula $CRF^{\Pi}[i] = p_i \cdot \max\left\{0, (t^*_{\Pi}(i) + tr_i) - ts_i\right\}$.
-$$CRF^\prod = \sum_{i = 0}^{n} p_i \cdot \max\left\{0, (t^*_{\Pi}(i) + tr_i) - ts_i\right\}$$
+$$CRF^{\prod} = \sum_{i = 0}^{n} p_i \cdot \max\left\{0, (t^*_{\Pi}(i) + tr_i) - ts_i\right\}$$
 3. Se busca implementar una subestructura optima que calcule la permutación de tablones (programación), para la que la penalización es la mínima posible, con una solución ingenua aproximada de $O(2^n)$, y una
 
-Podemos empezar desde una Finca de tamaño 1. Para esta finca solo existe una programación optima que es solamente el tablón 0. $$\prod = ⟨π0⟩$$.
+Podemos empezar desde una Finca de tamaño 1. Para esta finca solo existe una programación optima que es solamente el tablón 0. 
+$$\prod = ⟨π0⟩$$
 
-Posteriormente podemos agregar otro tablón al problema. Quedándonos una Finca de tamaño 2. Para esta finca existen 2 posibles programaciones, que dependen del orden en que se manejen los tablones. $$1\prod = ⟨π0, π1⟩  ,  2\prod = ⟨π1, π0⟩$$.
+Posteriormente podemos agregar otro tablón al problema. Quedándonos una Finca de tamaño 2. Para esta finca existen 2 posibles programaciones, que dependen del orden en que se manejen los tablones.
+$$1\prod = ⟨π0, π1⟩  ,  2\prod = ⟨π1, π0⟩$$
 
 Y así sucesivamente podemos agregar tablón a tablón y determinar que la cantidad de programaciones posibles crece a una velocidad de $2^n$, siendo $n$ el numero del tablón final.
 
 Con este enfoque es posible ver una estructuración del problema:
 
 **Caso base:** $F = ⟨T_0⟩$, finca con un solo elemento.
-		Mejor programación: $$\prod = ⟨π0⟩$$
+		Mejor programación: $\prod = ⟨π0⟩$
 
 **Caso siguiente:** $F = ⟨T_0, T_1⟩$, finca con 2 elementos.
-		Mejor programación:$$\prod = min(CRF^{0\prod}, CRF^{1\prod})  $$
+		Mejor programación:$\prod = min(CRF^{0\prod}, CRF^{1\prod})$
 		Esta determinada por el mínimo entre el costo que genera la permutación 0 y la permutación 1.
 
 
 **Caso n tablones:** $F = ⟨T_0, T_1, \dots, T_n⟩$, finca con $n$ elementos.
-		Mejor programación:$$\prod = min(CRF^{0\prod}, CRF^{1\prod}, \dots, CRF^{n\prod})  $$
-		Esta determinado por el costo mínimo de todas las permutaciones desde 0 hasta $n$.
+		Mejor programación:
+$$\prod = min(CRF^{0\prod}, CRF^{1\prod}, \dots, CRF^{n\prod})$$
+	Esta determinado por el costo mínimo de todas las permutaciones desde 0 hasta $n$.
 ## Solución ingenua
 
 Partiendo de la estructuración del problema podemos definir una solución ingenua. Para cada nivel del árbol se adiciona un tablón en cada una de las posiciones factibles de este y y se calcula su costo.
@@ -165,7 +168,7 @@ $$
 F_1 = \langle \langle 10,3,4 \rangle, \langle 5,3,3 \rangle, \langle 2,2,1 \rangle, \langle 8,1,1 \rangle, \langle 6,4,2 \rangle \rangle
 $$
 ---
-**Paso 1  $S_0$
+**Paso 1  $S_0$**
 
 Solo hay un tablón $T_0$.
 $S_0 = [0]$
