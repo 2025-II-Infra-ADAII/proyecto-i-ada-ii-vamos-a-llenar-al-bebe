@@ -5,63 +5,65 @@ Para este caso se generan todas las permutaciones posibles y calcula $CRF^{\Pi}$
 ### Código
 
 ```java
-public int[] programacionFuerzaBruta(int[][] Finca){
-	int n = Finca.length;
-	int[] mejorProgramacion = new int[n];
-	int mejorCosto = Integer.MAX_VALUE;
-	// Generar todas las permutaciones
-	List<Integer> indices = new ArrayList<>();
-	
-	for (int i = 0; i < n; i++) indices.add(i);
-	
-	List<List<Integer>> permutaciones = generarPermutaciones(indices);
-	
-	for (List<Integer> perm : permutaciones) {
-		int costo = (int) calcularCosto(Finca, listaToArray(perm));
-		if (costo < mejorCosto) {
-			mejorCosto = costo;
-			mejorProgramacion = listaToArray(perm);
-		}
-	}
-	System.out.println("Menor costo encontrado: " + mejorCosto);
-	return mejorProgramacion;
-}
+public int[][] roFB(int[][] Finca){
+        int n = Finca.length;
+        int[] mejorProgramacion = new int[n];
+        int mejorCosto = Integer.MAX_VALUE;
+        
+        // Generar todas las permutaciones
+        List<Integer> indices = new ArrayList<>();
+        for (int i = 0; i < n; i++) indices.add(i);
+        
+        List<List<Integer>> permutaciones = generarPermutaciones(indices);
+        
+        for (List<Integer> perm : permutaciones) {
+            int costo = (int) calcularCosto(Finca, listaToArray(perm));
+            if (costo < mejorCosto) {
+                mejorCosto = costo;
+                mejorProgramacion = listaToArray(perm);
+            }
+        }
+        
+        return new int[][]{mejorProgramacion, new int[]{mejorCosto}};
+    }
 
-private List<List<Integer>> generarPermutaciones(List<Integer> lista) {
-	List<List<Integer>> resultado = new ArrayList<>();
-	generarPermutacionesHelper(lista, 0, resultado);
-	return resultado;
-}
+    private List<List<Integer>> generarPermutaciones(List<Integer> lista) {
+        List<List<Integer>> resultado = new ArrayList<>();
+        generarPermutacionesHelper(lista, 0, resultado);
+        return resultado;
+    }
 
-private void generarPermutacionesHelper(List<Integer> lista, int inicio, List<List<Integer>> resultado) {
-
-   if (inicio == lista.size() - 1) {
-		resultado.add(new ArrayList<>(lista));
-		return;
-	}
-	for (int i = inicio; i < lista.size(); i++) {
-		// Intercambiar elementos
-		intercambiar(lista, inicio, i);
-		// Generar permutaciones recursivamente
-		generarPermutacionesHelper(lista, inicio + 1, resultado);
-		// Volver al estado anterior (backtracking)
-		intercambiar(lista, inicio, i);
-	}
-}
-
-private void intercambiar(List<Integer> lista, int i, int j) {
-	int temp = lista.get(i);
-	lista.set(i, lista.get(j));
-	lista.set(j, temp);
-}
-
-private int[] listaToArray(List<Integer> lista) {
-	int[] array = new int[lista.size()];
-	for (int i = 0; i < lista.size(); i++) {
-		array[i] = lista.get(i);
-	}
-	return array;
-}
+    private void generarPermutacionesHelper(List<Integer> lista, int inicio, List<List<Integer>> resultado) {
+        if (inicio == lista.size() - 1) {
+            resultado.add(new ArrayList<>(lista));
+            return;
+        }
+        
+        for (int i = inicio; i < lista.size(); i++) {
+            // Intercambiar elementos
+            intercambiar(lista, inicio, i);
+            
+            // Generar permutaciones recursivamente
+            generarPermutacionesHelper(lista, inicio + 1, resultado);
+            
+            // Volver al estado anterior (backtracking)
+            intercambiar(lista, inicio, i);
+        }
+    }
+    
+    private void intercambiar(List<Integer> lista, int i, int j) {
+        int temp = lista.get(i);
+        lista.set(i, lista.get(j));
+        lista.set(j, temp);
+    }
+    
+    private int[] listaToArray(List<Integer> lista) {
+        int[] array = new int[lista.size()];
+        for (int i = 0; i < lista.size(); i++) {
+            array[i] = lista.get(i);
+        }
+        return array;
+    }
 ```
 
 
@@ -143,7 +145,7 @@ n * (n-1) * (n-2) * \dots * (3) * (2) * (1) = n!
 $$
 Por lo que el valor de $g(n) = O(n!)$
 
-### $C(n) = generarPermutaciones()$
+### $C(n) = calcularCosto()$
 
 ```java
 /*Metodo para calcular el costo de una programación */

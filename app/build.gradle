@@ -51,14 +51,10 @@ test {
     }
 }
 
-tasks.register('compileApp') {
-    group = 'build'
-    description = 'Compila la aplicación Java'
-    
-    dependsOn tasks.named('classes')
-    
-    doLast {
-        println '✅ Aplicación compilada exitosamente'
-        println '📁 Archivos compilados en: build/classes/java/main'
-    }
+// Task para compilar específicamente
+tasks.register('compileApp', JavaCompile) {
+    source = fileTree('src/main/java')
+    include 'App.java'  // compila solo App.java
+    destinationDirectory = file("$buildDir/classes/java/main")
+    classpath = sourceSets.main.compileClasspath
 }

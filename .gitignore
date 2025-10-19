@@ -6,6 +6,7 @@
 **/build/
 !src/**/build/
 *.hprof
+.metals/
 
 # Ignore Gradle GUI config
 gradle-app.setting

@@ -13,24 +13,28 @@ Para la definición de este algoritmo voraz se tomaron en cuenta 2 conceptos de 
 $$\frac{p_i}{tr_i}$$
 
 ```java
-public int[] programacionVoraz1(int[][] Finca){
-	int n = Finca.length;
-	int[] programacion = new int[n];
-	PriorityQueue<Map.Entry<Double, Integer>> colaProg =
-		new PriorityQueue<>((a, b) -> Double.compare(b.getKey(), a.getKey()));
+/* p/tr */
+    public int[][] roV1(int[][] Finca){
+        int n = Finca.length;
+        int[] programacion = new int[n];
+        
+        PriorityQueue<Map.Entry<Double, Integer>> colaProg = 
+            new PriorityQueue<>((a, b) -> Double.compare(b.getKey(), a.getKey()));
 
-	for (int i = 0; i < n; i++) {
-		double voraz = (Finca[i][2] / (double)Finca[i][1]);
-		colaProg.offer(new SimpleEntry<>(voraz, i));  
-	}
-	int cont = 0;
-	while(!colaProg.isEmpty()){
-		Map.Entry<Double, Integer> entry = colaProg.poll();
-		programacion[cont] = entry.getValue();
-		cont++;
-	}
-	return programacion;
-}
+        for (int i = 0; i < n; i++) {
+            double voraz = (Finca[i][2] / (double)Finca[i][1]);
+            colaProg.offer(new SimpleEntry<>(voraz, i));  
+        }
+        int cont = 0;
+        while(!colaProg.isEmpty()){
+            Map.Entry<Double, Integer> entry = colaProg.poll();
+            programacion[cont] = entry.getValue();
+            cont++;
+        }
+
+        long costo = calcularCosto(Finca, programacion);
+        return new int[][]{programacion, new int[]{(int)costo}};
+    }
 ```
 
 #### Solución voraz 2
@@ -58,32 +62,35 @@ $$
 
 
 ```java
-public int[] programacionVoraz2(int[][] Finca){
-	int n = Finca.length;
-	int[] programacion = new int[n];
-	PriorityQueue<Map.Entry<Double, Integer>> colaProg =
-		new PriorityQueue<>((a, b) -> Double.compare(b.getKey(), a.getKey()));
+/* p/(ts-tr) */
+    public int[][] roV2(int[][] Finca){
+        int n = Finca.length;
+        int[] programacion = new int[n];
+        
+        PriorityQueue<Map.Entry<Double, Integer>> colaProg = 
+            new PriorityQueue<>((a, b) -> Double.compare(b.getKey(), a.getKey()));
 
-	for (int i = 0; i < n; i++) {
+        for (int i = 0; i < n; i++) {
 
-		double voraz;
-		if (Finca[i][0] - Finca[i][1] == 0) {
-			// Evitar división por cero
-			voraz = (Finca[i][2] / Finca[i][1]);
-		}else{
-			voraz = (Finca[i][2] / (Finca[i][0] - Finca[i][1]));
-		}
-		colaProg.offer(new SimpleEntry<>(voraz, i));  
-	}
+        double voraz;
+        if (Finca[i][0] - Finca[i][1] == 0) {
+            // Evitar división por cero
+            voraz = (Finca[i][2] / Finca[i][1]);
+        }else{
+            voraz = (Finca[i][2] / (Finca[i][0] - Finca[i][1]));
+        }
+        colaProg.offer(new SimpleEntry<>(voraz, i));  
+        }
 
-	int cont = 0;
-	while(!colaProg.isEmpty()){
-		Map.Entry<Double, Integer> entry = colaProg.poll();
-		programacion[cont] = entry.getValue();
-		cont++;
-	}
-	return programacion;
-}
+        int cont = 0;
+        while(!colaProg.isEmpty()){
+            Map.Entry<Double, Integer> entry = colaProg.poll();
+            programacion[cont] = entry.getValue();
+            cont++;
+        }
+        long costo = calcularCosto(Finca, programacion);
+        return new int[][]{programacion, new int[]{(int)costo}};
+    }
 ```
 
 ### Pruebas de las Soluciones Voraces
@@ -488,7 +495,7 @@ Costo total: 259
 |  $F_4$  | 9    |   335   |   417   |   Voraz 1   |     315      |
 |  $F_5$  | 10   |   264   |   387   |   Voraz 1   |     259      |
 
-Al final para valores mas altos, es mejor la solución voraz 1. Así que esa será la que se trabajara al completo 
+Al final para valores mas altos, es mejor la solución voraz 1. Así que esa será la que se trabajara al completo.
 
 ### Complejidad 
 
@@ -496,32 +503,34 @@ Solución voraz1:
 $$\frac{p_i}{tr_i}$$
 
 ```java
-public int[] programacionVoraz1(int[][] Finca){
-	int n = Finca.length;
-	int[] programacion = new int[n];
-	
-	//Implementación de una cola de baja prioridad
-	PriorityQueue<Map.Entry<Double, Integer>> colaProg =
-		new PriorityQueue<>((a, b) -> Double.compare(b.getKey(), a.getKey()));
+/* p/tr */
+    public int[][] roV1(int[][] Finca){
+        int n = Finca.length;
+        int[] programacion = new int[n];
+        
+        PriorityQueue<Map.Entry<Double, Integer>> colaProg = 
+            new PriorityQueue<>((a, b) -> Double.compare(b.getKey(), a.getKey()));
 
-	//Itera desde i = 0 hasta n. O(n)
-	for (int i = 0; i < n; i++) {
-		double voraz = (Finca[i][2] / (double)Finca[i][1]);
-		
-		//Insertar el elemento en una cola de prioridad
-		colaProg.offer(new SimpleEntry<>(voraz, i));  
-	}
-	int cont = 0;
-	while(!colaProg.isEmpty()){
-		Map.Entry<Double, Integer> entry = colaProg.poll();
-		programacion[cont] = entry.getValue();
-		cont++;
-	}
-	return programacion;
-}
+		// O(n)
+        for (int i = 0; i < n; i++) {
+            double voraz = (Finca[i][2] / (double)Finca[i][1]);
+            colaProg.offer(new SimpleEntry<>(voraz, i));  
+        }
+        int cont = 0;
+        
+        // O(n)
+        while(!colaProg.isEmpty()){
+            Map.Entry<Double, Integer> entry = colaProg.poll();
+            programacion[cont] = entry.getValue();
+            cont++;
+        }
+
+        long costo = calcularCosto(Finca, programacion);
+        return new int[][]{programacion, new int[]{(int)costo}};
+    }
 ```
 
-Para calcular la complejidad de la función **programacionVoraz1()** se deben mirar dos momentos clave, la instanciación de la cola de prioridad con el bucle **for** y el paso de los valores al la lista en el bucle **while**.
+Para calcular la complejidad de la función **roV1** se deben mirar dos momentos clave, la instanciación de la cola de prioridad con el bucle **for** y el paso de los valores al la lista en el bucle **while**.
 
 **for**
 $T(n) = \sum_{i=0}^{n} colaProg.offer()$
