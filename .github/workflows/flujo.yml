@@ -53,6 +53,9 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
+      - name: Dar permisos al wrapper de Gradle
+        run: chmod +x gradlew
+
       - name: Verificar que el código compile sin ejecutar pruebas
         run: ./gradlew compileTestsOnly --no-daemon
 
