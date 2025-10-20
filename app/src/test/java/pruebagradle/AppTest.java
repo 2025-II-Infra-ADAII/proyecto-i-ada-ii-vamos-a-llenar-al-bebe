@@ -4,6 +4,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Disabled;
 import static org.junit.jupiter.api.Assertions.*;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class AppTest {
 
@@ -15,6 +17,16 @@ public class AppTest {
     // ===============================================================
 
     /** a) Tamaño Juguete: 10 elementos */
+
+
+    private int[][] obtenerFinca(String nombreArchivo, int n) throws IOException {
+ 
+        return App.leerFincaDesdeRecursos("../test/resources/fincas_test/" + nombreArchivo);
+
+    }
+
+
+
     @Test
     void testJugueteVoraz() throws IOException {
         System.out.println("==== Test Juguete (Voraz) ====");
@@ -177,17 +189,14 @@ public class AppTest {
         //assertTrue(resultado[1][0] >= 0, "El costo no debe ser negativo");
     }
 
-    private int[][] obtenerFinca(String archivo, int n) throws IOException {
-        // Carga desde archivo si lo tienes, o usa datos generados
-        return generarFinca(n);
-    }
+
 
     private int[][] generarFinca(int n) {
         int[][] finca = new int[n][3];
         for (int i = 0; i < n; i++) {
             finca[i][0] = (i % 10) + 1;
             finca[i][1] = (i % 7) + 1;
-            finca[i][2] = (i % 3) + 1;
+            finca[i][2] = (i % 4) + 1;
         }
         return finca;
     }
