@@ -189,6 +189,29 @@ $$
 
 ### Corrección
 
+Para verificar la corrección del algoritmo **de fuerza bruta**, se comparan los resultados generados automáticamente por la función `roFB()` con los resultados teóricos que se obtienen en los ejemplos manuales del informe.
 
+#### Objetivo
 
+Validar que el método `roFB` encuentra la programación de tablones con **mínima penalización total ($CRF^{\Pi}$)**, coincidiendo con los resultados teóricos de referencia.
 
+#### Caso de prueba
+
+$$
+F_1 = ([10,3,4],[5,3,3],[2,2,1],[8,1,1],[6,4,2])
+$$
+
+#### Ejecución del algoritmo
+
+```java
+int[][] F1 = {
+    {10,3,4}, {5,3,3}, {2,2,1}, {8,1,1}, {6,4,2}
+};
+int[][] resultado = roFB(F1);
+System.out.println("Mejor orden: " + Arrays.toString(resultado[0]));
+System.out.println("Costo mínimo: " + resultado[1][0]);
+```
+
+#### Salida esperada:
+Mejor orden: [2, 1, 3, 0, 4]
+Costo mínimo: 14

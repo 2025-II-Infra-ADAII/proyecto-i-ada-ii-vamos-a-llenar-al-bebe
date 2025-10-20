@@ -558,4 +558,36 @@ $T(n) = O(n * \log n)$
 $$
 T(n) = O(n * \log n)
 $$
-### Corrección 
+### Corrección
+
+Para validar el comportamiento del algoritmo **voraz (`roV`)**, se compararon los resultados obtenidos con los del algoritmo de **fuerza bruta (`roFB`)**, considerado como referencia óptima.
+
+#### Objetivo
+
+Verificar que la estrategia voraz, basada en el criterio de prioridad por tiempo de riego $\frac{p_i}{tr_i}$, genera una programación de riego con un costo cercano al óptimo, reduciendo significativamente el tiempo de ejecución.
+
+#### Caso de prueba
+
+Usando la misma finca de referencia:
+
+$$
+F_1 = ([10,3,4],[5,3,3],[2,2,1],[8,1,1],[6,4,2])
+$$
+
+#### Ejecución del algoritmo
+
+```java
+int[][] F1 = {
+    {10,3,4}, {5,3,3}, {2,2,1}, {8,1,1}, {6,4,2}
+};
+int[][] resultado = roV(F1);
+System.out.println("Orden voraz: " + Arrays.toString(resultado[0]));
+System.out.println("Costo obtenido: " + resultado[1][0]);
+```
+
+### Salida obtenida:
+Orden voraz: [1, 4, 0, 3, 2]
+Costo obtenido: 17
+
+#### Analisis
+Teniendo  en cuenta que la solución optima por fuerza bruta nos arrojó un costo de 14 podemos observar que la solución voraz solo nos da una diferencia de +3
