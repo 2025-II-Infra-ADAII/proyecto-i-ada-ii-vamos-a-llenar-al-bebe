@@ -58,3 +58,29 @@ tasks.register('compileApp', JavaCompile) {
     destinationDirectory = file("$buildDir/classes/java/main")
     classpath = sourceSets.main.compileClasspath
 }
+
+
+tasks.withType(Test) {
+    // Desactiva ejecución paralela de tests
+    maxParallelForks = 1
+
+    // Asegura que los tests se ejecuten en un solo hilo dentro del mismo proceso
+    systemProperty "junit.jupiter.execution.parallel.enabled", "false"
+
+    // Opcional: muestra los nombres de los tests en tiempo real
+    testLogging {
+        events "PASSED", "FAILED", "SKIPPED"
+    }
+}
+
+
+// Task personalizada que compila los tests sin ejecutarlos
+tasks.register("compileTestsOnly", JavaCompile) {
+    description = "Compila el código de prueba sin ejecutarlo."
+    group = "verification"
+
+    // Usa la configuración de compilación de test
+    source = sourceSets.test.java
+    classpath = sourceSets.test.compileClasspath
+    destinationDirectory = layout.buildDirectory.dir("classes/java/testOnly")
+}

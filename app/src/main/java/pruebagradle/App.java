@@ -20,7 +20,7 @@ public class App {
         int n = Finca.length;
 
         //Retorna vacio si la finca esta vacia
-        if (n == 0) return new int[0][0];
+        if (n == 0) return new int[][] { new int[0], new int[]{0} };
         
         int[] mejorOrden = new int[n];
         int tamañoActual = 1;
